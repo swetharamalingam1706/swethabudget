@@ -18,7 +18,7 @@ export const TransactionItem = ({ name, category, amount, date, icon }: Transact
           <p className="text-sm text-muted-foreground">{category} • {date}</p>
         </div>
       </div>
-      <span className="font-semibold text-foreground">-${amount.toFixed(2)}</span>
+      <span className="font-semibold text-foreground">-₹{amount.toLocaleString('en-IN')}</span>
     </div>
   );
 };

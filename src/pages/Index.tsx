@@ -14,31 +14,32 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { toast } from "sonner";
 
 const budgetData = [
-  { category: "Food & Dining", spent: 450, budget: 600, icon: "🍔" },
-  { category: "Shopping", spent: 320, budget: 400, icon: "🛍️" },
-  { category: "Transportation", spent: 180, budget: 200, icon: "🚗" },
-  { category: "Entertainment", spent: 150, budget: 250, icon: "🎬" },
+  { category: "Food & Dining", spent: 3750, budget: 5000, icon: "🍔" },
+  { category: "Shopping", spent: 2650, budget: 3300, icon: "🛍️" },
+  { category: "Transportation", spent: 1500, budget: 1650, icon: "🚗" },
+  { category: "Entertainment", spent: 1250, budget: 2100, icon: "🎬" },
 ];
 
 const transactions = [
-  { name: "Whole Foods", category: "Groceries", amount: 87.50, date: "Today", icon: "🛒" },
-  { name: "Uber", category: "Transportation", amount: 24.30, date: "Yesterday", icon: "🚕" },
-  { name: "Netflix", category: "Entertainment", amount: 15.99, date: "2 days ago", icon: "📺" },
-  { name: "Starbucks", category: "Food & Dining", amount: 12.45, date: "2 days ago", icon: "☕" },
-  { name: "Amazon", category: "Shopping", amount: 156.78, date: "3 days ago", icon: "📦" },
+  { name: "Big Basket", category: "Groceries", amount: 725, date: "Today", icon: "🛒" },
+  { name: "Ola", category: "Transportation", amount: 202, date: "Yesterday", icon: "🚕" },
+  { name: "Netflix", category: "Entertainment", amount: 649, date: "2 days ago", icon: "📺" },
+  { name: "Cafe Coffee Day", category: "Food & Dining", amount: 350, date: "2 days ago", icon: "☕" },
+  { name: "Flipkart", category: "Shopping", amount: 4500, date: "3 days ago", icon: "📦" },
 ];
 
 const chartData = [
-  { name: "Mon", amount: 120 },
-  { name: "Tue", amount: 89 },
-  { name: "Wed", amount: 145 },
-  { name: "Thu", amount: 67 },
-  { name: "Fri", amount: 198 },
-  { name: "Sat", amount: 234 },
-  { name: "Sun", amount: 156 },
+  { name: "Mon", amount: 995 },
+  { name: "Tue", amount: 738 },
+  { name: "Wed", amount: 1203 },
+  { name: "Thu", amount: 556 },
+  { name: "Fri", amount: 1643 },
+  { name: "Sat", amount: 1942 },
+  { name: "Sun", amount: 1294 },
 ];
 
 const Index = () => {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -60,19 +61,56 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-2xl font-bold">MyBudget</h1>
-            <Button variant="secondary" size="sm">Profile</Button>
+            <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+              <DialogTrigger asChild>
+                <Button variant="secondary" size="sm">Profile</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Profile</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
+                      <span className="text-2xl">👤</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-lg">Rahul Sharma</p>
+                      <p className="text-sm text-muted-foreground">rahul.sharma@email.com</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3 pt-4 border-t">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Member since</span>
+                      <span className="font-medium">January 2024</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Monthly budget</span>
+                      <span className="font-medium">₹12,050</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Savings goal</span>
+                      <span className="font-medium">₹4,15,000</span>
+                    </div>
+                  </div>
+                  <div className="pt-4">
+                    <Button className="w-full" variant="outline">Edit Profile</Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
             <p className="text-sm text-primary-foreground/80 mb-2">Total Balance</p>
-            <p className="text-4xl font-bold mb-4">$5,847.32</p>
+            <p className="text-4xl font-bold mb-4">₹4,85,325</p>
             <div className="flex gap-4">
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
-                <span className="text-sm">Income: $3,200</span>
+                <span className="text-sm">Income: ₹2,65,600</span>
               </div>
               <div className="flex items-center gap-2">
                 <TrendingDown className="h-4 w-4" />
-                <span className="text-sm">Expenses: $1,247</span>
+                <span className="text-sm">Expenses: ₹1,03,500</span>
               </div>
             </div>
           </div>
@@ -93,22 +131,22 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <StatCard 
                 title="This Month" 
-                value="$1,247" 
+                value="₹1,03,500" 
                 icon={Wallet}
                 trend="-12% from last month"
               />
               <StatCard 
                 title="Budget Left" 
-                value="$903" 
+                value="₹74,950" 
                 icon={TrendingUp}
                 trend="58% remaining"
                 variant="success"
               />
               <StatCard 
                 title="Savings Goal" 
-                value="$2,500" 
+                value="₹2,07,500" 
                 icon={PieChart}
-                trend="Target: $5,000"
+                trend="Target: ₹4,15,000"
                 variant="warning"
               />
             </div>
@@ -140,12 +178,12 @@ const Index = () => {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="amount">Amount</Label>
+                        <Label htmlFor="amount">Amount (₹)</Label>
                         <Input
                           id="amount"
                           type="number"
-                          step="0.01"
-                          placeholder="0.00"
+                          step="1"
+                          placeholder="0"
                           value={formData.amount}
                           onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                           required
@@ -223,7 +261,7 @@ const Index = () => {
                         <span className="text-xl">{item.icon}</span>
                         <span className="text-sm text-foreground">{item.category}</span>
                       </div>
-                      <span className="font-semibold text-foreground">${item.spent.toFixed(2)}</span>
+                      <span className="font-semibold text-foreground">₹{item.spent.toLocaleString('en-IN')}</span>
                     </div>
                   ))}
                 </div>
@@ -244,7 +282,7 @@ const Index = () => {
                   </div>
                   <div className="p-3 bg-primary/10 rounded-lg">
                     <p className="text-sm text-foreground">
-                      💡 Consider setting aside $200 more for savings
+                      💡 Consider setting aside ₹16,600 more for savings
                     </p>
                   </div>
                 </div>

@@ -26,7 +26,7 @@ export const BudgetCard = ({ category, spent, budget, icon }: BudgetCardProps) =
           <div>
             <h3 className="font-semibold text-card-foreground">{category}</h3>
             <p className="text-sm text-muted-foreground">
-              ${spent.toFixed(2)} / ${budget.toFixed(2)}
+              ₹{spent.toLocaleString('en-IN')} / ₹{budget.toLocaleString('en-IN')}
             </p>
           </div>
         </div>
