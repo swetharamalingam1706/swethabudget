@@ -40,6 +40,13 @@ const chartData = [
 
 const Index = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: "Rahul Sharma",
+    email: "rahul.sharma@email.com",
+    monthlyBudget: "12050",
+    savingsGoal: "415000",
+  });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -52,6 +59,16 @@ const Index = () => {
     toast.success("Transaction added successfully!");
     setIsDialogOpen(false);
     setFormData({ name: "", amount: "", category: "" });
+  };
+
+  const handleProfileSave = () => {
+    toast.success("Profile updated successfully!");
+    setIsEditingProfile(false);
+  };
+
+  const handleProfileCancel = () => {
+    setIsEditingProfile(false);
+    // Reset to original values if needed
   };
 
   return (
@@ -69,34 +86,90 @@ const Index = () => {
                 <DialogHeader>
                   <DialogTitle>Profile</DialogTitle>
                 </DialogHeader>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
-                      <span className="text-2xl">👤</span>
+                {!isEditingProfile ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span className="text-2xl">👤</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-lg">{profileData.name}</p>
+                        <p className="text-sm text-muted-foreground">{profileData.email}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-semibold text-lg">Rahul Sharma</p>
-                      <p className="text-sm text-muted-foreground">rahul.sharma@email.com</p>
+                    <div className="space-y-3 pt-4 border-t">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Member since</span>
+                        <span className="font-medium">January 2024</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Monthly budget</span>
+                        <span className="font-medium">₹{parseInt(profileData.monthlyBudget).toLocaleString('en-IN')}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Savings goal</span>
+                        <span className="font-medium">₹{parseInt(profileData.savingsGoal).toLocaleString('en-IN')}</span>
+                      </div>
+                    </div>
+                    <div className="pt-4">
+                      <Button className="w-full" variant="outline" onClick={() => setIsEditingProfile(true)}>
+                        Edit Profile
+                      </Button>
                     </div>
                   </div>
-                  <div className="space-y-3 pt-4 border-t">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Member since</span>
-                      <span className="font-medium">January 2024</span>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="profile-name">Full Name</Label>
+                        <Input
+                          id="profile-name"
+                          value={profileData.name}
+                          onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                          placeholder="Enter your name"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="profile-email">Email</Label>
+                        <Input
+                          id="profile-email"
+                          type="email"
+                          value={profileData.email}
+                          onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                          placeholder="Enter your email"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="profile-budget">Monthly Budget (₹)</Label>
+                        <Input
+                          id="profile-budget"
+                          type="number"
+                          value={profileData.monthlyBudget}
+                          onChange={(e) => setProfileData({ ...profileData, monthlyBudget: e.target.value })}
+                          placeholder="0"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="profile-savings">Savings Goal (₹)</Label>
+                        <Input
+                          id="profile-savings"
+                          type="number"
+                          value={profileData.savingsGoal}
+                          onChange={(e) => setProfileData({ ...profileData, savingsGoal: e.target.value })}
+                          placeholder="0"
+                        />
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Monthly budget</span>
-                      <span className="font-medium">₹12,050</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Savings goal</span>
-                      <span className="font-medium">₹4,15,000</span>
+                    <div className="flex gap-2 pt-4">
+                      <Button className="flex-1" onClick={handleProfileSave}>
+                        Save Changes
+                      </Button>
+                      <Button className="flex-1" variant="outline" onClick={handleProfileCancel}>
+                        Cancel
+                      </Button>
                     </div>
                   </div>
-                  <div className="pt-4">
-                    <Button className="w-full" variant="outline">Edit Profile</Button>
-                  </div>
-                </div>
+                )}
               </DialogContent>
             </Dialog>
           </div>
