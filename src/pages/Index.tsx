@@ -72,17 +72,17 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <header className="bg-gradient-to-r from-primary to-[hsl(var(--primary)_/_0.8)] text-primary-foreground p-6 pb-24">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold">MyBudget</h1>
+      <header className="bg-gradient-to-r from-primary to-[hsl(var(--primary)_/_0.8)] text-primary-foreground p-4 pb-20 sticky top-0 z-10">
+        <div className="max-w-md mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-xl font-bold">MyBudget</h1>
             <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
               <DialogTrigger asChild>
-                <Button variant="secondary" size="sm">Profile</Button>
+                <Button variant="secondary" size="sm" className="h-9">Profile</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
+              <DialogContent className="w-[90vw] max-w-md mx-auto">
                 <DialogHeader>
                   <DialogTitle>Profile</DialogTitle>
                 </DialogHeader>
@@ -173,17 +173,17 @@ const Index = () => {
               </DialogContent>
             </Dialog>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-            <p className="text-sm text-primary-foreground/80 mb-2">Total Balance</p>
-            <p className="text-4xl font-bold mb-4">₹4,85,325</p>
-            <div className="flex gap-4">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
+            <p className="text-xs text-primary-foreground/80 mb-1">Total Balance</p>
+            <p className="text-3xl font-bold mb-3">₹4,85,325</p>
+            <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" />
-                <span className="text-sm">Income: ₹2,65,600</span>
+                <TrendingUp className="h-3.5 w-3.5" />
+                <span className="text-xs">Income: ₹2,65,600</span>
               </div>
               <div className="flex items-center gap-2">
-                <TrendingDown className="h-4 w-4" />
-                <span className="text-sm">Expenses: ₹1,03,500</span>
+                <TrendingDown className="h-3.5 w-3.5" />
+                <span className="text-xs">Expenses: ₹1,03,500</span>
               </div>
             </div>
           </div>
@@ -191,17 +191,17 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 -mt-12 pb-8">
+      <main className="max-w-md mx-auto px-4 -mt-12 pb-8">
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="budgets">Budgets</TabsTrigger>
-            <TabsTrigger value="insights">Insights</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 mb-4 h-11">
+            <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
+            <TabsTrigger value="budgets" className="text-xs">Budgets</TabsTrigger>
+            <TabsTrigger value="insights" className="text-xs">Insights</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
+          <TabsContent value="overview" className="space-y-4">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-3">
               <StatCard 
                 title="This Month" 
                 value="₹1,03,500" 
@@ -225,17 +225,17 @@ const Index = () => {
             </div>
 
             {/* Recent Transactions */}
-            <Card className="p-6">
+            <Card className="p-4">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-foreground">Recent Transactions</h2>
+                <h2 className="text-lg font-bold text-foreground">Recent Transactions</h2>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button size="sm" className="shadow-[var(--shadow-button)]">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Transaction
+                    <Button size="sm" className="shadow-[var(--shadow-button)] h-9">
+                      <Plus className="h-4 w-4 mr-1" />
+                      Add
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="w-[90vw] max-w-md mx-auto">
                     <DialogHeader>
                       <DialogTitle>Add New Transaction</DialogTitle>
                     </DialogHeader>
@@ -248,6 +248,7 @@ const Index = () => {
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           required
+                          className="h-11"
                         />
                       </div>
                       <div>
@@ -260,6 +261,7 @@ const Index = () => {
                           value={formData.amount}
                           onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                           required
+                          className="h-11"
                         />
                       </div>
                       <div>
@@ -269,7 +271,7 @@ const Index = () => {
                           onValueChange={(value) => setFormData({ ...formData, category: value })}
                           required
                         >
-                          <SelectTrigger id="category">
+                          <SelectTrigger id="category" className="h-11">
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
                           <SelectContent>
@@ -280,12 +282,12 @@ const Index = () => {
                           </SelectContent>
                         </Select>
                       </div>
-                      <Button type="submit" className="w-full">Add Transaction</Button>
+                      <Button type="submit" className="w-full h-11">Add Transaction</Button>
                     </form>
                   </DialogContent>
                 </Dialog>
               </div>
-              <div className="space-y-1">
+              <div className="space-y-2">
                 {transactions.map((transaction, index) => (
                   <TransactionItem key={index} {...transaction} />
                 ))}
@@ -294,24 +296,24 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="budgets" className="space-y-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-foreground">Budget Categories</h2>
+            <div className="mb-3">
+              <h2 className="text-lg font-bold text-foreground">Budget Categories</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-3">
               {budgetData.map((budget, index) => (
                 <BudgetCard key={index} {...budget} />
               ))}
             </div>
           </TabsContent>
 
-          <TabsContent value="insights" className="space-y-6">
-            <Card className="p-6">
-              <h2 className="text-xl font-bold text-foreground mb-4">Weekly Spending</h2>
-              <ResponsiveContainer width="100%" height={300}>
+          <TabsContent value="insights" className="space-y-4">
+            <Card className="p-4">
+              <h2 className="text-lg font-bold text-foreground mb-4">Weekly Spending</h2>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />
-                  <YAxis stroke="hsl(var(--muted-foreground))" />
+                  <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
                   <Tooltip 
                     contentStyle={{ 
                       backgroundColor: "hsl(var(--card))",
@@ -324,43 +326,41 @@ const Index = () => {
               </ResponsiveContainer>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Top Spending Categories</h3>
-                <div className="space-y-3">
-                  {budgetData.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">{item.icon}</span>
-                        <span className="text-sm text-foreground">{item.category}</span>
-                      </div>
-                      <span className="font-semibold text-foreground">₹{item.spent.toLocaleString('en-IN')}</span>
+            <Card className="p-4">
+              <h3 className="text-base font-semibold text-foreground mb-3">Top Spending Categories</h3>
+              <div className="space-y-3">
+                {budgetData.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{item.icon}</span>
+                      <span className="text-sm text-foreground">{item.category}</span>
                     </div>
-                  ))}
-                </div>
-              </Card>
+                    <span className="font-semibold text-foreground text-sm">₹{item.spent.toLocaleString('en-IN')}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
 
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Financial Tips</h3>
-                <div className="space-y-3">
-                  <div className="p-3 bg-[hsl(var(--success))]/10 rounded-lg">
-                    <p className="text-sm text-foreground">
-                      ✅ You're 12% under budget this month! Keep it up!
-                    </p>
-                  </div>
-                  <div className="p-3 bg-[hsl(var(--warning))]/10 rounded-lg">
-                    <p className="text-sm text-foreground">
-                      ⚠️ Shopping expenses are approaching the limit
-                    </p>
-                  </div>
-                  <div className="p-3 bg-primary/10 rounded-lg">
-                    <p className="text-sm text-foreground">
-                      💡 Consider setting aside ₹16,600 more for savings
-                    </p>
-                  </div>
+            <Card className="p-4">
+              <h3 className="text-base font-semibold text-foreground mb-3">Financial Tips</h3>
+              <div className="space-y-2">
+                <div className="p-3 bg-[hsl(var(--success))]/10 rounded-lg">
+                  <p className="text-xs text-foreground">
+                    ✅ You're 12% under budget this month! Keep it up!
+                  </p>
                 </div>
-              </Card>
-            </div>
+                <div className="p-3 bg-[hsl(var(--warning))]/10 rounded-lg">
+                  <p className="text-xs text-foreground">
+                    ⚠️ Shopping expenses are approaching the limit
+                  </p>
+                </div>
+                <div className="p-3 bg-primary/10 rounded-lg">
+                  <p className="text-xs text-foreground">
+                    💡 Consider setting aside ₹16,600 more for savings
+                  </p>
+                </div>
+              </div>
+            </Card>
           </TabsContent>
         </Tabs>
       </main>

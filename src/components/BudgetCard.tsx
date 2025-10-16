@@ -19,18 +19,18 @@ export const BudgetCard = ({ category, spent, budget, icon }: BudgetCardProps) =
   };
 
   return (
-    <Card className="p-4 hover:shadow-lg transition-shadow">
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-3">
-          <div className="text-2xl">{icon}</div>
+    <Card className="p-3 hover:shadow-lg transition-shadow">
+      <div className="flex items-start justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <div className="text-xl">{icon}</div>
           <div>
-            <h3 className="font-semibold text-card-foreground">{category}</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="font-semibold text-sm text-card-foreground">{category}</h3>
+            <p className="text-xs text-muted-foreground">
               ₹{spent.toLocaleString('en-IN')} / ₹{budget.toLocaleString('en-IN')}
             </p>
           </div>
         </div>
-        <span className={`text-sm font-medium ${
+        <span className={`text-xs font-medium ${
           status === "good" ? "text-[hsl(var(--success))]" : 
           status === "warning" ? "text-[hsl(var(--warning))]" : 
           "text-[hsl(var(--destructive))]"

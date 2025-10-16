@@ -17,21 +17,21 @@ export const StatCard = ({ title, value, icon: Icon, trend, variant = "default" 
   };
 
   return (
-    <Card className={`p-4 ${variantStyles[variant]}`}>
+    <Card className={`p-3 ${variantStyles[variant]}`}>
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-muted-foreground mb-1">{title}</p>
-          <p className="text-2xl font-bold text-foreground">{value}</p>
+          <p className="text-xs text-muted-foreground mb-1">{title}</p>
+          <p className="text-xl font-bold text-foreground">{value}</p>
           {trend && (
-            <p className="text-xs text-muted-foreground mt-1">{trend}</p>
+            <p className="text-[10px] text-muted-foreground mt-1">{trend}</p>
           )}
         </div>
-        <div className={`p-2 rounded-lg ${
+        <div className={`p-1.5 rounded-lg ${
           variant === "success" ? "bg-[hsl(var(--success))]/20" :
           variant === "warning" ? "bg-[hsl(var(--warning))]/20" :
           "bg-primary/20"
         }`}>
-          <Icon className={`h-5 w-5 ${
+          <Icon className={`h-4 w-4 ${
             variant === "success" ? "text-[hsl(var(--success))]" :
             variant === "warning" ? "text-[hsl(var(--warning))]" :
             "text-primary"

@@ -8,17 +8,17 @@ interface TransactionItemProps {
 
 export const TransactionItem = ({ name, category, amount, date, icon }: TransactionItemProps) => {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-border last:border-0">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-lg">
+    <div className="flex items-center justify-between py-2 border-b border-border last:border-0">
+      <div className="flex items-center gap-2">
+        <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center text-base">
           {icon}
         </div>
         <div>
-          <p className="font-medium text-foreground">{name}</p>
-          <p className="text-sm text-muted-foreground">{category} • {date}</p>
+          <p className="font-medium text-sm text-foreground">{name}</p>
+          <p className="text-xs text-muted-foreground">{category} • {date}</p>
         </div>
       </div>
-      <span className="font-semibold text-foreground">-₹{amount.toLocaleString('en-IN')}</span>
+      <span className="font-semibold text-sm text-foreground">-₹{amount.toLocaleString('en-IN')}</span>
     </div>
   );
 };
