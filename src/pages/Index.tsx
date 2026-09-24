@@ -13,14 +13,28 @@ import { StatCard } from "@/components/StatCard";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { toast } from "sonner";
 
-const budgetData = [
+interface Budget {
+  category: string;
+  spent: number;
+  budget: number;
+  icon: string;
+}
+
+const initialBudgets: Budget[] = [
   { category: "Food & Dining", spent: 3750, budget: 5000, icon: "🍔" },
   { category: "Shopping", spent: 2650, budget: 3300, icon: "🛍️" },
   { category: "Transportation", spent: 1500, budget: 1650, icon: "🚗" },
   { category: "Entertainment", spent: 1250, budget: 2100, icon: "🎬" },
 ];
 
-const transactions = [
+const categoryMap: Record<string, string> = {
+  food: "Food & Dining",
+  shopping: "Shopping",
+  transport: "Transportation",
+  entertainment: "Entertainment",
+};
+
+const initialTransactions = [
   { name: "Big Basket", category: "Groceries", amount: 725, date: "Today", icon: "🛒" },
   { name: "Ola", category: "Transportation", amount: 202, date: "Yesterday", icon: "🚕" },
   { name: "Netflix", category: "Entertainment", amount: 649, date: "2 days ago", icon: "📺" },
@@ -38,13 +52,16 @@ const chartData = [
   { name: "Sun", amount: 1294 },
 ];
 
+const formatINR = (value: number) => `₹${value.toLocaleString("en-IN")}`;
+
 const Index = () => {
+  const [budgets, setBudgets] = useState<Budget[]>(initialBudgets);
+  const [transactions, setTransactions] = useState(initialTransactions);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [profileData, setProfileData] = useState({
     name: "Rahul Sharma",
     email: "rahul.sharma@email.com",
-    monthlyBudget: "12050",
     savingsGoal: "415000",
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -53,10 +70,39 @@ const Index = () => {
     amount: "",
     category: "",
   });
+  const [editingBudgetIndex, setEditingBudgetIndex] = useState<number | null>(null);
+  const [editBudgetValue, setEditBudgetValue] = useState("");
+
+  // Derived totals — everything recalculates from the budgets you set
+  const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0);
+  const totalBudget = budgets.reduce((sum, b) => sum + b.budget, 0);
+  const budgetLeft = totalBudget - totalSpent;
+  const percentRemaining = totalBudget > 0 ? Math.max(0, Math.round((budgetLeft / totalBudget) * 100)) : 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Transaction added successfully!");
+    const amount = parseFloat(formData.amount);
+    const categoryName = categoryMap[formData.category];
+    if (!amount || !categoryName) return;
+
+    // Add to recent transactions list
+    const icons: Record<string, string> = {
+      "Food & Dining": "🍔",
+      Shopping: "🛍️",
+      Transportation: "🚗",
+      Entertainment: "🎬",
+    };
+    setTransactions((prev) => [
+      { name: formData.name, category: categoryName, amount, date: "Today", icon: icons[categoryName] },
+      ...prev,
+    ]);
+
+    // Update the matching budget's spent amount
+    setBudgets((prev) =>
+      prev.map((b) => (b.category === categoryName ? { ...b, spent: b.spent + amount } : b))
+    );
+
+    toast.success("Transaction added and budget updated!");
     setIsDialogOpen(false);
     setFormData({ name: "", amount: "", category: "" });
   };
@@ -68,7 +114,24 @@ const Index = () => {
 
   const handleProfileCancel = () => {
     setIsEditingProfile(false);
-    // Reset to original values if needed
+  };
+
+  const openEditBudget = (index: number) => {
+    setEditingBudgetIndex(index);
+    setEditBudgetValue(String(budgets[index].budget));
+  };
+
+  const handleBudgetSave = () => {
+    const value = parseFloat(editBudgetValue);
+    if (editingBudgetIndex === null || !value || value <= 0) {
+      toast.error("Please enter a valid budget amount");
+      return;
+    }
+    setBudgets((prev) =>
+      prev.map((b, i) => (i === editingBudgetIndex ? { ...b, budget: value } : b))
+    );
+    toast.success(`${budgets[editingBudgetIndex].category} budget updated to ${formatINR(value)}`);
+    setEditingBudgetIndex(null);
   };
 
   return (
@@ -103,8 +166,8 @@ const Index = () => {
                         <span className="font-medium">January 2024</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Monthly budget</span>
-                        <span className="font-medium">₹{parseInt(profileData.monthlyBudget).toLocaleString('en-IN')}</span>
+                        <span className="text-muted-foreground">Total monthly budget</span>
+                        <span className="font-medium">{formatINR(totalBudget)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Savings goal</span>
@@ -137,16 +200,6 @@ const Index = () => {
                           value={profileData.email}
                           onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
                           placeholder="Enter your email"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="profile-budget">Monthly Budget (₹)</Label>
-                        <Input
-                          id="profile-budget"
-                          type="number"
-                          value={profileData.monthlyBudget}
-                          onChange={(e) => setProfileData({ ...profileData, monthlyBudget: e.target.value })}
-                          placeholder="0"
                         />
                       </div>
                       <div>
@@ -183,7 +236,7 @@ const Index = () => {
               </div>
               <div className="flex items-center gap-2">
                 <TrendingDown className="h-3.5 w-3.5" />
-                <span className="text-xs">Expenses: ₹1,03,500</span>
+                <span className="text-xs">Expenses: {formatINR(totalSpent)}</span>
               </div>
             </div>
           </div>
@@ -204,22 +257,22 @@ const Index = () => {
             <div className="grid grid-cols-1 gap-3">
               <StatCard 
                 title="This Month" 
-                value="₹1,03,500" 
+                value={formatINR(totalSpent)} 
                 icon={Wallet}
-                trend="-12% from last month"
+                trend={`of ${formatINR(totalBudget)} budgeted`}
               />
               <StatCard 
                 title="Budget Left" 
-                value="₹74,950" 
+                value={formatINR(budgetLeft)} 
                 icon={TrendingUp}
-                trend="58% remaining"
+                trend={`${percentRemaining}% remaining`}
                 variant="success"
               />
               <StatCard 
                 title="Savings Goal" 
                 value="₹2,07,500" 
                 icon={PieChart}
-                trend="Target: ₹4,15,000"
+                trend={`Target: ₹${parseInt(profileData.savingsGoal).toLocaleString('en-IN')}`}
                 variant="warning"
               />
             </div>
@@ -298,12 +351,51 @@ const Index = () => {
           <TabsContent value="budgets" className="space-y-4">
             <div className="mb-3">
               <h2 className="text-lg font-bold text-foreground">Budget Categories</h2>
+              <p className="text-xs text-muted-foreground mt-1">
+                Total: {formatINR(totalSpent)} spent of {formatINR(totalBudget)} · Tap the pencil to change a budget
+              </p>
             </div>
             <div className="grid grid-cols-1 gap-3">
-              {budgetData.map((budget, index) => (
-                <BudgetCard key={index} {...budget} />
+              {budgets.map((budget, index) => (
+                <BudgetCard key={index} {...budget} onEdit={() => openEditBudget(index)} />
               ))}
             </div>
+
+            {/* Edit Budget Dialog */}
+            <Dialog open={editingBudgetIndex !== null} onOpenChange={(open) => !open && setEditingBudgetIndex(null)}>
+              <DialogContent className="w-[90vw] max-w-md mx-auto">
+                <DialogHeader>
+                  <DialogTitle>
+                    Edit {editingBudgetIndex !== null ? budgets[editingBudgetIndex].category : ""} Budget
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="budget-amount">Monthly Budget (₹)</Label>
+                    <Input
+                      id="budget-amount"
+                      type="number"
+                      min="1"
+                      value={editBudgetValue}
+                      onChange={(e) => setEditBudgetValue(e.target.value)}
+                      placeholder="0"
+                      className="h-11"
+                    />
+                    {editingBudgetIndex !== null && (
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Currently spent: {formatINR(budgets[editingBudgetIndex].spent)}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button className="flex-1 h-11" onClick={handleBudgetSave}>Save Budget</Button>
+                    <Button className="flex-1 h-11" variant="outline" onClick={() => setEditingBudgetIndex(null)}>
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
 
           <TabsContent value="insights" className="space-y-4">
@@ -329,34 +421,53 @@ const Index = () => {
             <Card className="p-4">
               <h3 className="text-base font-semibold text-foreground mb-3">Top Spending Categories</h3>
               <div className="space-y-3">
-                {budgetData.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">{item.icon}</span>
-                      <span className="text-sm text-foreground">{item.category}</span>
+                {[...budgets]
+                  .sort((a, b) => b.spent - a.spent)
+                  .map((item, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{item.icon}</span>
+                        <span className="text-sm text-foreground">{item.category}</span>
+                      </div>
+                      <span className="font-semibold text-foreground text-sm">{formatINR(item.spent)}</span>
                     </div>
-                    <span className="font-semibold text-foreground text-sm">₹{item.spent.toLocaleString('en-IN')}</span>
-                  </div>
-                ))}
+                  ))}
               </div>
             </Card>
 
             <Card className="p-4">
               <h3 className="text-base font-semibold text-foreground mb-3">Financial Tips</h3>
               <div className="space-y-2">
-                <div className="p-3 bg-[hsl(var(--success))]/10 rounded-lg">
-                  <p className="text-xs text-foreground">
-                    ✅ You're 12% under budget this month! Keep it up!
-                  </p>
-                </div>
-                <div className="p-3 bg-[hsl(var(--warning))]/10 rounded-lg">
-                  <p className="text-xs text-foreground">
-                    ⚠️ Shopping expenses are approaching the limit
-                  </p>
-                </div>
+                {budgetLeft >= 0 ? (
+                  <div className="p-3 bg-[hsl(var(--success))]/10 rounded-lg">
+                    <p className="text-xs text-foreground">
+                      ✅ You have {formatINR(budgetLeft)} left from your {formatINR(totalBudget)} budget. Keep it up!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-3 bg-[hsl(var(--destructive))]/10 rounded-lg">
+                    <p className="text-xs text-foreground">
+                      🚨 You're over budget by {formatINR(Math.abs(budgetLeft))}. Time to slow down spending!
+                    </p>
+                  </div>
+                )}
+                {budgets.some((b) => b.spent / b.budget >= 0.8 && b.spent / b.budget < 1) && (
+                  <div className="p-3 bg-[hsl(var(--warning))]/10 rounded-lg">
+                    <p className="text-xs text-foreground">
+                      ⚠️ {budgets.find((b) => b.spent / b.budget >= 0.8 && b.spent / b.budget < 1)?.category} is approaching its limit
+                    </p>
+                  </div>
+                )}
+                {budgets.some((b) => b.spent > b.budget) && (
+                  <div className="p-3 bg-[hsl(var(--destructive))]/10 rounded-lg">
+                    <p className="text-xs text-foreground">
+                      🚨 {budgets.find((b) => b.spent > b.budget)?.category} has exceeded its budget
+                    </p>
+                  </div>
+                )}
                 <div className="p-3 bg-primary/10 rounded-lg">
                   <p className="text-xs text-foreground">
-                    💡 Consider setting aside ₹16,600 more for savings
+                    💡 Setting aside {formatINR(Math.max(0, Math.round(budgetLeft * 0.5)))} of your remaining budget could boost your savings goal
                   </p>
                 </div>
               </div>
