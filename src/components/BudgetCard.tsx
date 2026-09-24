@@ -1,14 +1,17 @@
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
 
 interface BudgetCardProps {
   category: string;
   spent: number;
   budget: number;
   icon: string;
+  onEdit?: () => void;
 }
 
-export const BudgetCard = ({ category, spent, budget, icon }: BudgetCardProps) => {
+export const BudgetCard = ({ category, spent, budget, icon, onEdit }: BudgetCardProps) => {
   const percentage = (spent / budget) * 100;
   const status = percentage >= 100 ? "over" : percentage >= 80 ? "warning" : "good";
   
@@ -30,13 +33,20 @@ export const BudgetCard = ({ category, spent, budget, icon }: BudgetCardProps) =
             </p>
           </div>
         </div>
-        <span className={`text-xs font-medium ${
+        <div className="flex items-center gap-1">
+          {onEdit && (
+            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onEdit} aria-label={`Edit ${category} budget`}>
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+          )}
+          <span className={`text-xs font-medium ${
           status === "good" ? "text-[hsl(var(--success))]" : 
           status === "warning" ? "text-[hsl(var(--warning))]" : 
           "text-[hsl(var(--destructive))]"
         }`}>
           {percentage.toFixed(0)}%
-        </span>
+          </span>
+        </div>
       </div>
       <Progress value={percentage} className="h-2" indicatorClassName={statusColors[status]} />
     </Card>
