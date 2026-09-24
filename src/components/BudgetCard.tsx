@@ -45,7 +45,8 @@ export const BudgetCard = ({ category, spent, budget, icon, onEdit }: BudgetCard
           "text-[hsl(var(--destructive))]"
         }`}>
           {percentage.toFixed(0)}%
-        </span>
+          </span>
+        </div>
       </div>
       <Progress value={percentage} className="h-2" indicatorClassName={statusColors[status]} />
     </Card>
