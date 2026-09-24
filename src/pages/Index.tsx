@@ -74,7 +74,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <header className="bg-gradient-to-r from-primary to-[hsl(var(--primary)_/_0.8)] text-primary-foreground p-4 pb-20 sticky top-0 z-10">
+      <header className="bg-gradient-to-r from-primary to-[hsl(var(--primary)_/_0.8)] text-primary-foreground p-4 pb-6 sticky top-0 z-10">
         <div className="max-w-md mx-auto">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-xl font-bold">MyBudget</h1>
@@ -191,7 +191,7 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-md mx-auto px-4 -mt-12 pb-8">
+      <main className="max-w-md mx-auto px-4 pb-8">
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-4 h-11">
             <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
